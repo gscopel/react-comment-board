@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Comment from '../presentation/Comment'
-import superagent from 'superagent'
 import styles from './styles'
+import { APIManager } from '../../utils'
 
 class Comments extends Component {
 
@@ -10,41 +10,37 @@ constructor(){
     this.state = {
       comment: {
         username: '',
-        body: '',
-        timestamp: ''
+        body: ''
       },
       list: []
     }
   }
 
   componentDidMount(){
-    console.log('componentDidMount: ')
-
-    superagent
-    .get('/api/comment')
-    .query(null)
-    .set('Accept', 'application/json')
-    .end((err, response) => {
+  //  console.log('componentDidMount: ')
+    APIManager.get('/api/comment', null, (err, response) => {
       if (err){
-        alert('ERROR: ' + err)
+        alert('ERROR: ' + err.message)
         return
       }
-      console.log(JSON.stringify(response.body))
-      let results = response.body.results
-
       this.setState({
-        list: results
+        list: response.results
       })
-
     })
   }
 
   submitComment(){
-    //console.log('submitComment: ' + JSON.stringify(this.state.comment))
-    let updatedList = Object.assign([], this.state.list)
-    updatedList.push(this.state.comment)
-    this.setState({
-      list: updatedList
+    APIManager.post('/api/comment', this.state.comment, (err, response) => {
+      if (err){
+        alert(err)
+        return
+      }
+      console.log(JSON.stringify(response))
+      let updatedList = Object.assign([], this.state.list)
+      updatedList.push(response.result)
+      this.setState({
+        list: updatedList
+      })
     })
   }
 
@@ -61,15 +57,6 @@ constructor(){
   //  console.log('updateBody: ' + e.target.value)
     let updatedComment = Object.assign({}, this.state.comment)
     updatedComment['body'] = e.target.value
-    this.setState({
-      comment: updatedComment
-    })
-  }
-
-  updateTimestamp(e){
-  //  console.log('updateTimestamp: ' + e.target.value)
-    let updatedComment = Object.assign({}, this.state.comment)
-    updatedComment['timestamp'] = e.target.value
     this.setState({
       comment: updatedComment
     })
@@ -93,7 +80,6 @@ constructor(){
 
           <input onChange={this.updateUsername.bind(this)} className="form-control" type="text" placeholder="Username"/><br />
           <input onChange={this.updateBody.bind(this)} className="form-control" type="text" placeholder="Comment"/><br />
-          <input onChange={this.updateTimestamp.bind(this)} className="form-control" type="text" placeholder="Timestamp"/><br />
           <button onClick={this.submitComment.bind(this)} className="btn btn-info">Submit Comment</button>
         </div>
       </div>

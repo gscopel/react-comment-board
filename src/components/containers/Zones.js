@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Zone from '../presentation/Zone'
-import superagent from 'superagent'
+import { APIManager } from '../../utils'
 
 class Zones extends Component {
 
@@ -17,38 +17,38 @@ class Zones extends Component {
   }
 
   componentDidMount(){
-    console.log('componentDidMount')
-
-    superagent
-    .get('/api/zone')
-    .query(null)
-    .set('Accept', 'application/json')
-    .end((err, response) => {
+  //  console.log('componentDidMount')
+    APIManager.get('/api/zone', null, (err, response) => {
       if (err){
-        alert('ERROR: ' + err)
+        alert('ERROR: ' + err.message)
         return
       }
-      console.log(JSON.stringify(response.body))
-      let results = response.body.results
-
       this.setState({
-        list: results
+        list: response.results
       })
-
     })
   }
 
   submitZone(){
     console.log('submitZone: ' + JSON.stringify(this.state.zone))
-    let updatedList = Object.assign([], this.state.list)
-    updatedList.push(this.state.zone)
-    this.setState({
-      list: updatedList
+    let updatedZone = Object.assign({}, this.state.zone)
+    updatedZone['zipCodes'] = updatedZone.zipCode.split(',')
+    APIManager.post('/api/zone', updatedZone, (err, response) => {
+      if (err) {
+        alert('error: ' + err.message)
+        return
+      }
+      console.log('ZONE CREATED: ' + JSON.stringify(response))
+      let updatedList = Object.assign([], this.state.list)
+      updatedList.push(response.result)
+      this.setState({
+        list: updatedList
+      })
     })
   }
 
   updateName(e){
-    console.log('updateName: ' + e.target.value)
+  //  console.log('updateName: ' + e.target.value)
     let updatedZone = Object.assign({}, this.state.zone)
     updatedZone['name'] = e.target.value
     this.setState({
@@ -57,7 +57,7 @@ class Zones extends Component {
   }
 
   updateZipcode(e){
-    console.log('updateZipcode: ' + e.target.value)
+  //  console.log('updateZipcode: ' + e.target.value)
     let updatedZone = Object.assign({}, this.state.zone)
     updatedZone['zipCode'] = e.target.value
     this.setState({
