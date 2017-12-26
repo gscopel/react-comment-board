@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
-import Zone from '../presentation/Zone'
+import { CreateZone, Zone } from '../presentation'
 import { APIManager } from '../../utils'
+import { connect } from 'react-redux'
+import actions from '../../actions/actions'
+import store from '../../stores/store'
 
 class Zones extends Component {
 
   constructor(){
     super()
     this.state = {
-      zone: {
-        name: '',
-        zipCode: '',
-        comments: ''
-      },
-      list: []
+    
     }
   }
 
@@ -23,54 +21,53 @@ class Zones extends Component {
         alert('ERROR: ' + err.message)
         return
       }
-      this.setState({
-        list: response.results
-      })
+      const zones = response.results
+      this.props.zonesReceived(zones)
+        // Redux used to replace setState
+        // this.setState({
+        //   list: response.results
+        // })
     })
   }
 
-  submitZone(){
-    console.log('submitZone: ' + JSON.stringify(this.state.zone))
-    let updatedZone = Object.assign({}, this.state.zone)
+  submitZone(zone){
+    let updatedZone = Object.assign({}, zone)
     updatedZone['zipCodes'] = updatedZone.zipCode.split(',')
+  //  console.log('submitZone: ' + JSON.stringify(updatedZone))
+
     APIManager.post('/api/zone', updatedZone, (err, response) => {
       if (err) {
         alert('error: ' + err.message)
         return
       }
-      console.log('ZONE CREATED: ' + JSON.stringify(response))
-      let updatedList = Object.assign([], this.state.list)
-      updatedList.push(response.result)
-      this.setState({
-        list: updatedList
-      })
+      const zone = response.result
+      this.props.zoneCreated(zone)
+      // console.log('ZONE CREATED: ' + JSON.stringify(response))
+      // let updatedList = Object.assign([], this.state.list)
+      // updatedList.push(response.result)
+      // this.setState({
+      //   list: updatedList
+      // })
     })
   }
 
-  updateName(e){
-  //  console.log('updateName: ' + e.target.value)
-    let updatedZone = Object.assign({}, this.state.zone)
-    updatedZone['name'] = e.target.value
-    this.setState({
-      zone: updatedZone
-    })
+  selectZone(zoneIndex){
+  //  console.log('selectZone: ' + zoneIndex)
+  this.props.selectZone(zoneIndex)
+    // this.setState({
+    //   selected: zoneIndex
+    // })
   }
-
-  updateZipcode(e){
-  //  console.log('updateZipcode: ' + e.target.value)
-    let updatedZone = Object.assign({}, this.state.zone)
-    updatedZone['zipCode'] = e.target.value
-    this.setState({
-      zone: updatedZone
-    })
-  }
-
 
   render(){
 
-    const listItem = this.state.list.map((zone, i) => {
+    const listItem = this.props.list.map((zone, i) => {
+      let selected = (i == this.props.selected)
       return (
-        <li key={i}><Zone currentZone={zone}/></li>
+        <li key={i}>
+            <Zone zoneIndex={i} onSelect={this.selectZone.bind(this)}
+            isSelected={selected} currentZone={zone}/>
+        </li>
       )
     })
 
@@ -79,14 +76,25 @@ class Zones extends Component {
         <ol>
           {listItem}
         </ol>
-
-        <h2>Add Zone</h2>
-        <input onChange={this.updateName.bind(this)} className="form-control" type="text" placeholder="name"/><br />
-        <input onChange={this.updateZipcode.bind(this)} className="form-control" type="text" placeholder="Zip Code"/><br />
-        <button onClick={this.submitZone.bind(this)} className="btn btn-success">Add Zone</button>
+          <CreateZone onCreateZone={this.submitZone.bind(this)} />
       </div>
     )
   }
 }
 
-export default Zones
+const stateToProps = (state) => {
+  return {
+    list: state.zone.list,
+    selected: state.zone.selectedZone
+  }
+}
+
+const dispatchToProps = (dispatch) => {
+  return {
+    zonesReceived: (zones) => dispatch(actions.zonesReceived(zones)),
+    zoneCreated: (zone) => dispatch(actions.zoneCreated(zone)),
+    selectZone: (zoneIndex) => dispatch(actions.selectZone(zoneIndex))
+  }
+}
+
+export default connect(stateToProps, dispatchToProps)(Zones)

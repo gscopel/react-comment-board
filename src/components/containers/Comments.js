@@ -1,17 +1,15 @@
 import React, { Component } from 'react'
-import Comment from '../presentation/Comment'
+import { Comment, CreateComment } from '../presentation'
 import styles from './styles'
 import { APIManager } from '../../utils'
+import { connect } from 'react-redux'
+import actions from '../../actions/actions'
 
 class Comments extends Component {
 
 constructor(){
     super()
     this.state = {
-      comment: {
-        username: '',
-        body: ''
-      },
       list: []
     }
   }
@@ -29,36 +27,20 @@ constructor(){
     })
   }
 
-  submitComment(){
-    APIManager.post('/api/comment', this.state.comment, (err, response) => {
+  submitComment(comment){
+  //  console.log('submitComment: ' + JSON.stringify(comment))
+    let updatedComment = Object.assign({}, comment)
+    APIManager.post('/api/comment', updatedComment, (err, response) => {
       if (err){
         alert(err)
         return
       }
-      console.log(JSON.stringify(response))
+    //  console.log(JSON.stringify(response))
       let updatedList = Object.assign([], this.state.list)
       updatedList.push(response.result)
       this.setState({
         list: updatedList
       })
-    })
-  }
-
-  updateUsername(e){
-  //  console.log('updateUsername: ' + e.target.value)
-    let updatedComment = Object.assign({}, this.state.comment)
-    updatedComment['username'] = e.target.value
-    this.setState({
-      comment: updatedComment
-    })
-  }
-
-  updateBody(e){
-  //  console.log('updateBody: ' + e.target.value)
-    let updatedComment = Object.assign({}, this.state.comment)
-    updatedComment['body'] = e.target.value
-    this.setState({
-      comment: updatedComment
     })
   }
 
@@ -70,21 +52,28 @@ constructor(){
       )
     })
 
+    const selectedZone = this.props.zones[this.props.zoneIndex]
+    const zoneName = (selectedZone == null) ? '' : selectedZone.name
+
     return(
       <div>
-        <h2>Comments: Zone 1</h2>
+        <h2>{zoneName}</h2>
         <div style={styles.comment.commentBox}>
           <ul style={{listStyleType:'none'}}>
             {commentList}
           </ul>
-
-          <input onChange={this.updateUsername.bind(this)} className="form-control" type="text" placeholder="Username"/><br />
-          <input onChange={this.updateBody.bind(this)} className="form-control" type="text" placeholder="Comment"/><br />
-          <button onClick={this.submitComment.bind(this)} className="btn btn-info">Submit Comment</button>
+          <CreateComment onCreateComment={this.submitComment.bind(this)} />
         </div>
       </div>
     )
   }
 }
 
-export default Comments
+const stateToProps = (state) => {
+  return {
+    zoneIndex: state.zone.selectedZone,
+    zones: state.zone.list
+  }
+}
+
+export default connect (stateToProps)(Comments)

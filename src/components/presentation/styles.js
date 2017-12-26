@@ -8,7 +8,7 @@ export default {
     },
     anchor: {
       textDecoration:'none',
-      color:'blue'
+      color:'red'
     },
     header: {
       marginTop:0,
