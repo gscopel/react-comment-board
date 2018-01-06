@@ -13,7 +13,7 @@ class CreateComment extends Component {
   }
 
   updateComment(e){
-    console.log('updateComment: ' + e.target.id + ' == ' + e.target.value)
+    //console.log('updateComment: ' + e.target.id + ' == ' + e.target.value)
     let updatedComment = Object.assign({}, this.state.comment)
     updatedComment[e.target.id] = e.target.value
     this.setState({
@@ -22,7 +22,7 @@ class CreateComment extends Component {
   }
 
   submitComment(e){
-    console.log('submitComment: ' + JSON.stringify(this.state.comment))
+  //  console.log('submitComment: ' + JSON.stringify(this.state.comment))
     this.props.onCreateComment(this.state.comment)
   }
 

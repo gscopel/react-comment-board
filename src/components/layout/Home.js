@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import Zones from '../containers/Zones'
-import Comments from '../containers/Comments'
+import { Account, Comments, Zones } from '../containers'
 
 class Home extends Component {
   render(){
@@ -8,6 +7,7 @@ class Home extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-4">
+             <Account />
              <Zones />
           </div>
 
