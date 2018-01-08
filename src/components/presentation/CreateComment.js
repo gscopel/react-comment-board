@@ -30,7 +30,6 @@ class CreateComment extends Component {
     return (
       <div>
         <h3>Add Comment</h3>
-        <input onChange={this.updateComment.bind(this)} id="username" className="form-control" type="text" placeholder="Username"/><br />
         <input onChange={this.updateComment.bind(this)} id="body" className="form-control" type="text" placeholder="Comment"/><br />
         <button onClick={this.submitComment.bind(this)} className="btn btn-info">Submit Comment</button>
       </div>

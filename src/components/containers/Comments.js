@@ -16,11 +16,16 @@ constructor(){
   }
 
   submitComment(comment){
+    if (this.props.user == null){
+      alert('Please create an account to access this feature')
+      return
+    }
     //console.log('submitComment: ' + JSON.stringify(comment))
     let updatedComment = Object.assign({}, comment)
 
     let zone = this.props.zones[this.props.zoneIndex]
     updatedComment['zone'] = zone._id
+    updatedComment['username'] = this.props.user.username
 
     APIManager.post('/api/comment', updatedComment, (err, response) => {
       if (err){
@@ -110,7 +115,8 @@ const stateToProps = (state) => {
     commentsMap: state.comment.map,
     commentsLoaded: state.comment.commentsLoaded,
     zoneIndex: state.zone.selectedZone,
-    zones: state.zone.list
+    zones: state.zone.list,
+    user: state.account.user
   }
 }
 

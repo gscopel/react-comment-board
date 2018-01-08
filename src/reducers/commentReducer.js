@@ -37,8 +37,8 @@ export default (state = initialState, action) => {
       return updatedState
 
     case constants.COMMENT_CREATED:
-      console.log('COMMENT_CREATED: ' + JSON.stringify(action.comment))
-      
+    //  console.log('COMMENT_CREATED: ' + JSON.stringify(action.comment))
+
 
       return updatedState
 

@@ -22,7 +22,7 @@ class Account extends Component {
         //alert(err.message)
         return
       }
-      console.log(JSON.stringify(response))
+    //  console.log(JSON.stringify(response))
       this.props.currentUserReceived(response.user)
     })
   }
@@ -39,7 +39,7 @@ class Account extends Component {
 
   login(e){
     e.preventDefault()
-    console.log(JSON.stringify(this.state.profile))
+  //  console.log(JSON.stringify(this.state.profile))
     if (this.state.profile.username.length == 0){
       alert('Please enter username')
       return
@@ -60,7 +60,7 @@ class Account extends Component {
 
   signUp(e){
     e.preventDefault()
-    console.log(JSON.stringify(this.state.profile))
+    //console.log(JSON.stringify(this.state.profile))
     if (this.state.profile.username.length == 0){
       alert('Please enter username')
       return
@@ -74,7 +74,23 @@ class Account extends Component {
         alert(err.message)
         return
       }
+      // console.log(JSON.stringify(response))
+     // User logs in when they sign up
+   this.props.currentUserReceived(response.user)
+    })
+  }
+
+  logout(e){
+    e.preventDefault()
+    //console.log('log out button clicked')
+
+    APIManager.get('/account/logout', null, (err, response) => {
+      if (err){
+        alert(err.message)
+        return
+      }
       console.log(JSON.stringify(response))
+      this.props.currentUserReceived(null)
     })
   }
 
@@ -102,7 +118,12 @@ class Account extends Component {
       )
     }
     else {
-       content =  <h2>Hello {this.props.user.username}. Welcome to the Morgantown Comment Board</h2>
+       content = (
+         <div>
+          <h2>Hello {this.props.user.username}. Welcome to the Morgantown Comment Board</h2>
+          <button onClick={this.logout.bind(this)}>Log Out</button>
+        </div>
+       )
     }
 
     return(

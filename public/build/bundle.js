@@ -19651,7 +19651,7 @@ var Account = function (_Component) {
           //alert(err.message)
           return;
         }
-        console.log(JSON.stringify(response));
+        //  console.log(JSON.stringify(response))
         _this2.props.currentUserReceived(response.user);
       });
     }
@@ -19672,7 +19672,7 @@ var Account = function (_Component) {
       var _this3 = this;
 
       e.preventDefault();
-      console.log(JSON.stringify(this.state.profile));
+      //  console.log(JSON.stringify(this.state.profile))
       if (this.state.profile.username.length == 0) {
         alert('Please enter username');
         return;
@@ -19693,8 +19693,10 @@ var Account = function (_Component) {
   }, {
     key: 'signUp',
     value: function signUp(e) {
+      var _this4 = this;
+
       e.preventDefault();
-      console.log(JSON.stringify(this.state.profile));
+      //console.log(JSON.stringify(this.state.profile))
       if (this.state.profile.username.length == 0) {
         alert('Please enter username');
         return;
@@ -19708,7 +19710,26 @@ var Account = function (_Component) {
           alert(err.message);
           return;
         }
+        // console.log(JSON.stringify(response))
+        // User logs in when they sign up
+        _this4.props.currentUserReceived(response.user);
+      });
+    }
+  }, {
+    key: 'logout',
+    value: function logout(e) {
+      var _this5 = this;
+
+      e.preventDefault();
+      //console.log('log out button clicked')
+
+      _utils.APIManager.get('/account/logout', null, function (err, response) {
+        if (err) {
+          alert(err.message);
+          return;
+        }
         console.log(JSON.stringify(response));
+        _this5.props.currentUserReceived(null);
       });
     }
   }, {
@@ -19753,11 +19774,20 @@ var Account = function (_Component) {
         );
       } else {
         content = _react2.default.createElement(
-          'h2',
+          'div',
           null,
-          'Hello ',
-          this.props.user.username,
-          '. Welcome to the Morgantown Comment Board'
+          _react2.default.createElement(
+            'h2',
+            null,
+            'Hello ',
+            this.props.user.username,
+            '. Welcome to the Morgantown Comment Board'
+          ),
+          _react2.default.createElement(
+            'button',
+            { onClick: this.logout.bind(this) },
+            'Log Out'
+          )
         );
       }
 
@@ -23850,11 +23880,16 @@ var Comments = function (_Component) {
     value: function submitComment(comment) {
       var _this2 = this;
 
+      if (this.props.user == null) {
+        alert('Please create an account to access this feature');
+        return;
+      }
       //console.log('submitComment: ' + JSON.stringify(comment))
       var updatedComment = Object.assign({}, comment);
 
       var zone = this.props.zones[this.props.zoneIndex];
       updatedComment['zone'] = zone._id;
+      updatedComment['username'] = this.props.user.username;
 
       _utils.APIManager.post('/api/comment', updatedComment, function (err, response) {
         if (err) {
@@ -23961,7 +23996,8 @@ var stateToProps = function stateToProps(state) {
     commentsMap: state.comment.map,
     commentsLoaded: state.comment.commentsLoaded,
     zoneIndex: state.zone.selectedZone,
-    zones: state.zone.list
+    zones: state.zone.list,
+    user: state.account.user
   };
 };
 
@@ -24047,8 +24083,6 @@ var CreateComment = function (_Component) {
           null,
           'Add Comment'
         ),
-        _react2.default.createElement('input', { onChange: this.updateComment.bind(this), id: 'username', className: 'form-control', type: 'text', placeholder: 'Username' }),
-        _react2.default.createElement('br', null),
         _react2.default.createElement('input', { onChange: this.updateComment.bind(this), id: 'body', className: 'form-control', type: 'text', placeholder: 'Comment' }),
         _react2.default.createElement('br', null),
         _react2.default.createElement(
@@ -24627,7 +24661,7 @@ exports.default = function () {
   switch (action.type) {
 
     case _constants2.default.CURRENT_USER_RECEIVED:
-      console.log('CURRENT_USER_RECEIVED: ' + JSON.stringify(action.user));
+      //  console.log('CURRENT_USER_RECEIVED: ' + JSON.stringify(action.user))
       //User no longer null
       updated['user'] = action.user;
 
@@ -24694,7 +24728,8 @@ exports.default = function () {
       return updatedState;
 
     case _constants2.default.COMMENT_CREATED:
-      console.log('COMMENT_CREATED: ' + JSON.stringify(action.comment));
+      //  console.log('COMMENT_CREATED: ' + JSON.stringify(action.comment))
+
 
       return updatedState;
 
