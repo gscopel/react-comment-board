@@ -10,7 +10,9 @@ class Account extends Component {
     this.state = {
       profile: {
         username: '',
-        password: ''
+        password: '',
+        area: '',
+        gender: ''
       }
     }
   }
@@ -113,6 +115,8 @@ class Account extends Component {
            </h2>
              <input id="username" onChange={this.updatedProfile.bind(this)} type="text" placeholder="username" /><br />
              <input id="password" onChange={this.updatedProfile.bind(this)} type="password" placeholder="password" /><br />
+             <input id="area" onChange={this.updatedProfile.bind(this)} type="text" placeholder="Neighborhood" /><br />
+             <input id="gender" onChange={this.updatedProfile.bind(this)} type="text" placeholder="gender" /><br />
              <button onClick={this.signUp.bind(this)}>Join</button>
         </div>
       )

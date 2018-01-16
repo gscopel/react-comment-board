@@ -1,44 +1,82 @@
 import React, { Component } from 'react'
 import { APIManager } from '../../utils'
+import { connect } from 'react-redux'
+import actions from '../../actions/actions'
 
 class Profile extends Component {
 
   constructor(){
     super()
-    this.state = {
-      profile: null
-    }
+    this.state = {}
   }
 
+
+ //Used to make only one API call for data
   componentDidMount(){
-    APIManager.get('/api/profile', {username: this.props.username}, (err, response) => {
-      if (err){
-        alert(err)
-        return
-      }
-      response.results[0]
-      console.log('componentDidMount: ' + JSON.stringify(response.results[0]))
-      if (response.results.length == 0){
-        alert('Sorry, this profile does not exist.')
-        return
-      }
-      this.setState({
-        profile: response.results[0]
-      })
-    })
+    const profile = this.props.profiles[this.props.username]
+    if (profile == null){
+      this.props.fetchProfile({username: this.props.username})
+        // APIManager.get('/api/profile', {username: this.props.username}, (err, response) => {
+        //   if (err){
+        //     alert(err)
+        //     return
+        //   }
+        //   response.results[0]
+        //   //console.log('componentDidMount: ' + JSON.stringify(response.results[0]))
+        //   if (response.results.length == 0){
+        //     alert('Sorry, this profile does not exist.')
+        //     return
+        //   }
+        //   this.props.profileReceived(response.results[0])
+        // })
+     }
+  }
+
+  componentDidUpdate(){
+  //console.log('componentDidUpdate: ')
   }
 
   render(){
+    //No data is rendered initially, componentDidMount will chcek for null and make API requests as needed
+    let profile = this.props.profiles[this.props.username]
 
-    //Check for null state
-    const header = (this.state.profile == null) ? null : <h3>{this.state.profile._id}</h3>
+    let header = null
+    if (profile != null){
+        header = (
+          <div>
+              <h3>{profile.username}</h3>
+              <p>
+                neighborhood: {profile.area}<br />
+                gender: {profile.gender}
+              </p>
+          </div>
+        )
+    }
+
+    //If status is loading then display to user that app API is loading
+    const content = (this.props.appStatus == 'loading') ? 'Loading...' : header
 
     return (
-      <div>
-        {header}
-      </div>
+     <div>
+       { content }
+     </div>
     )
   }
 }
 
-export default Profile
+const stateToProps = (state) => {
+  return {
+    profiles: state.profile.map,
+    appStatus: state.profile.appStatus
+  }
+}
+
+//Async action used via Thunk
+const dispatchToProps = (dispatch) => {
+  return {
+    fetchProfile: (params) => dispatch(actions.fetchProfile(params)),
+    //profileReceived: (profile) => dispatch(actions.profileReceived(profile))
+  }
+}
+
+export default connect(stateToProps, dispatchToProps)(Profile)

@@ -1,6 +1,39 @@
 import constants from '../constants/constants'
+import { APIManager } from '../utils'
 
 export default {
+
+  fetchProfile: (params) => {
+    return (dispatch) => {
+      dispatch({
+        type: constants.APPLICATION_STATE,
+        status: 'loading'
+      })
+
+      APIManager.get('/api/profile', params, (err, response) => {
+          if (err){
+            console.log('ERROR: ' + err)
+            return
+          }
+          //console.log('fetchProfile: ' + JSON.stringify(response))
+           if (response.results.length == 0){
+             alert('Sorry, this profile does not exist.')
+             return
+           }
+           dispatch({
+             type: constants.PROFILE_RECEIVED,
+             profile: response.results[0]
+           })
+       })
+     }
+  },
+
+  // profileReceived: (profile) => {
+  //   return {
+  //     type: constants.PROFILE_RECEIVED,
+  //     profile: profile
+  //   }
+  // },
 
   commentCreated: (comment) => {
     return {
@@ -14,6 +47,29 @@ export default {
       type: constants.COMMENTS_RECEIVED,
       comments: comments,
       zone: zone
+    }
+  },
+
+  fetchZones: (params) => {
+    return (dispatch) => {
+      dispatch({
+        type: constants.APPLICATION_STATE,
+        status: 'loading'
+      })
+      APIManager.get('/api/zone', params, (err, response) => {
+        if (err){
+          alert(err)
+          return
+        }
+        console.log(JSON.stringify(response))
+        //Simulate delay in API callback for profile information
+        setTimeout(() => {
+          dispatch({
+            type: constants.ZONES_RECEIVED,
+            zones: response.results
+          })
+        }, 3000)
+      })
     }
   },
 

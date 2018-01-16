@@ -9,25 +9,24 @@ class Zones extends Component {
 
   constructor(){
     super()
-    this.state = {
-    
-    }
+    this.state = {}
   }
 
   componentDidMount(){
   //  console.log('componentDidMount')
-    APIManager.get('/api/zone', null, (err, response) => {
-      if (err){
-        alert('ERROR: ' + err.message)
-        return
-      }
-      const zones = response.results
-      this.props.zonesReceived(zones)
+    this.props.fetchZones(null)
+    // APIManager.get('/api/zone', null, (err, response) => {
+    //   if (err){
+    //     alert('ERROR: ' + err.message)
+    //     return
+    //   }
+    //   const zones = response.results
+    //   this.props.zonesReceived(zones)
         // Redux used to replace setState
         // this.setState({
         //   list: response.results
         // })
-    })
+    //})
   }
 
   submitZone(zone){
@@ -53,10 +52,7 @@ class Zones extends Component {
 
   selectZone(zoneIndex){
   //  console.log('selectZone: ' + zoneIndex)
-  this.props.selectZone(zoneIndex)
-    // this.setState({
-    //   selected: zoneIndex
-    // })
+      this.props.selectZone(zoneIndex)
   }
 
   render(){
@@ -71,12 +67,24 @@ class Zones extends Component {
       )
     })
 
+    let content = null
+    if (this.props.appStatus == 'loading'){
+      content = 'Loading...'
+    }
+    else {
+      content = (
+        <div>
+          <ol>
+            {listItem}
+          </ol>
+            <CreateZone onCreateZone={this.submitZone.bind(this)} />
+        </div>
+      )
+    }
+
     return(
       <div>
-        <ol>
-          {listItem}
-        </ol>
-          <CreateZone onCreateZone={this.submitZone.bind(this)} />
+        { content }
       </div>
     )
   }
@@ -84,6 +92,7 @@ class Zones extends Component {
 
 const stateToProps = (state) => {
   return {
+    appStatus: state.zone.appStatus,
     list: state.zone.list,
     selected: state.zone.selectedZone
   }
@@ -91,6 +100,7 @@ const stateToProps = (state) => {
 
 const dispatchToProps = (dispatch) => {
   return {
+    fetchZones: (parmas) => dispatch(actions.fetchZones(parmas)),
     zonesReceived: (zones) => dispatch(actions.zonesReceived(zones)),
     zoneCreated: (zone) => dispatch(actions.zoneCreated(zone)),
     selectZone: (zoneIndex) => dispatch(actions.selectZone(zoneIndex))
