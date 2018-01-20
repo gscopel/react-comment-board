@@ -7,7 +7,8 @@ export default {
     return (dispatch) => {
       dispatch({
         type: constants.APPLICATION_STATE,
-        status: 'loading'
+        status: 'loading',
+        reducer: 'profile'
       })
 
       APIManager.get('/api/profile', params, (err, response) => {
@@ -54,7 +55,8 @@ export default {
     return (dispatch) => {
       dispatch({
         type: constants.APPLICATION_STATE,
-        status: 'loading'
+        status: 'loading',
+        reducer: 'zone'
       })
       APIManager.get('/api/zone', params, (err, response) => {
         if (err){
@@ -62,13 +64,10 @@ export default {
           return
         }
         console.log(JSON.stringify(response))
-        //Simulate delay in API callback for profile information
-        setTimeout(() => {
-          dispatch({
-            type: constants.ZONES_RECEIVED,
-            zones: response.results
-          })
-        }, 3000)
+        dispatch({
+          type: constants.ZONES_RECEIVED,
+          zones: response.results
+        })
       })
     }
   },
@@ -98,6 +97,24 @@ export default {
     return {
       type: constants.CURRENT_USER_RECEIVED,
       user: user
+    }
+  },
+
+  updateProfile: (profile, updatedState) => {
+    return (dispatch) => {
+      const endpoint = '/api/profile/'+profile._id
+      APIManager.put(endpoint, updatedState, (err, response) => {
+        if (err){
+          alert('Error' + JSON.stringify(err))
+          return
+        }
+        const updateProfile = response.result
+        dispatch({
+          type: constants.PROFILE_UPDATED,
+          profile: updateProfile
+        })
+        console.log('profile updated' + JSON.stringify(response))
+      })
     }
   }
 

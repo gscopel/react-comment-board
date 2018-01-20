@@ -29,6 +29,10 @@ export default (state = initialState, action) => {
       return updatedState
 
     case constants.APPLICATION_STATE:
+      if (action.reducer != 'zone'){
+          return updatedState
+      }
+
       updatedState['appStatus'] = action.status
       return updatedState
 

@@ -25,6 +25,10 @@ export default (state = initialState, action) => {
 
     case constants.APPLICATION_STATE:
       //console.log('APPLICATION_STATE: ' + action.status)
+      //Prevent loading status from showing up 
+      if (action.reducer != 'profile'){
+        return updatedState
+      }
       updatedState['appStatus'] = action.status
 
       return updatedState

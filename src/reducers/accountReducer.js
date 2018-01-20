@@ -10,11 +10,19 @@ export default (state = initialState, action) => {
     switch (action.type) {
 
         case constants.CURRENT_USER_RECEIVED:
-        //  console.log('CURRENT_USER_RECEIVED: ' + JSON.stringify(action.user))
+          //console.log('CURRENT_USER_RECEIVED: ' + JSON.stringify(action.user))
           //User no longer null
           updated['user'] = action.user
 
-        return updated
+          return updated
+
+        case constants.PROFILE_UPDATED:
+          console.log('PROFILE_UPDATED: ' + JSON.stringify(action.profile))
+          if (action.profile._id != updated.user._id)
+            return updated
+
+          updated['user'] = action.profile
+          return updated
 
       default:
         return state
