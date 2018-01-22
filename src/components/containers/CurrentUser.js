@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../../actions/actions'
+import Dropzone from 'react-dropzone'
+import { APIManager } from '../../utils'
+import sha1 from 'sha1'
 
 class CurrentUser extends Component {
   constructor(){
@@ -39,6 +42,32 @@ class CurrentUser extends Component {
     this.props.updateProfile(this.props.user, this.state.updatedState)
   }
 
+  uploadImage(files){
+    //Cloudinary API documentation
+    const image = files[0]
+    //console.log('uploadImage: ')
+    const cloudName = 'hn7c4ygti'
+    const url = 'https://api.cloudinary.com/v1_1/'+cloudName+'/image/upload'
+    let timestamp = Date.now() / 1000
+    const uploadPreset = 'o9nsr8bs'
+    const paramsStr = 'timestamp='+timestamp+'&upload_preset='+uploadPreset+'Fv46VeYzRpkbPK48iOHQ_lKnB34'
+    const signature = sha1(paramsStr)
+    const params = {
+      'api_key': '229545792548632',
+      'timestamp': timestamp,
+      'upload_preset': uploadPreset,
+      'signature': signature
+    }
+
+    APIManager.upload(url, image, params, (err, response) => {
+      if (err){
+        console.log('Upload error' + JSON.stringify(err))
+        return
+      }
+      console.log('Upload complete: ' + JSON.stringify(response))
+    })
+  }
+
   render(){
     const currentUser = this.props.user
     return(
@@ -47,6 +76,7 @@ class CurrentUser extends Component {
         <input type="text" id="username" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.username} placeholder="Username" /><br />
         <input type="text" id="area" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.area} placeholder="Neighborhood" /><br />
         <input type="text" id="gender" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.gender} placeholder="Gender" /><br />
+        <Dropzone onDrop={this.uploadImage.bind(this)} />
         <button onClick={this.updateProfile.bind(this)}>Update Profile</button>
       </div>
     )
