@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import actions from '../../actions/actions'
 import Dropzone from 'react-dropzone'
-import { APIManager } from '../../utils'
+import { APIManager, ImageHelper } from '../../utils'
 import sha1 from 'sha1'
 
 class CurrentUser extends Component {
@@ -38,6 +38,7 @@ class CurrentUser extends Component {
       return
     }
     this.props.updateProfile(this.props.user, this.state.updatedState)
+    alert('Your information was successfully saved')
   }
 
   uploadImage(files){
@@ -73,7 +74,7 @@ class CurrentUser extends Component {
 
   render(){
     const currentUser = this.props.user
-    const image = (this.state.updatedState.image == null) ? '' : this.state.updatedState.image.replace('upload', 'upload/c_thumb,h_150,w_150,x_0,y_0')//Render thumbnail
+    const image = (this.state.updatedState.image == null) ? '' : ImageHelper.thumbnail(this.state.updatedState.image, 150)//Render thumbnail
     return(
       <div>
         <h2>Welcome { currentUser.username }</h2>

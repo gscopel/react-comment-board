@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { APIManager } from '../../utils'
+import { APIManager, ImageHelper } from '../../utils'
 import { connect } from 'react-redux'
 import actions from '../../actions/actions'
 import { Link } from 'react-router-dom'
@@ -125,7 +125,8 @@ class Account extends Component {
     else {
        content = (
          <div>
-          <h2>Hello {this.props.user.username}. Welcome to the Morgantown Comment Board</h2>
+          <img style={{borderRadius:50, float:'left', marginRight:15}} src={ImageHelper.thumbnail(this.props.user.image, 82)} />
+          <h2>Hello {this.props.user.username}</h2>
           <span><p>You are located in {this.props.user.area}</p></span><br />
           <button onClick={this.logout.bind(this)}>Log Out</button><br /><br />
           <Link to="/currentuser"><button>Account</button></Link>
