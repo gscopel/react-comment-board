@@ -9,9 +9,7 @@ class CurrentUser extends Component {
   constructor(){
     super()
     this.state = {
-      updatedState: {
-
-      }
+      updatedState: {}
     }
   }
 
@@ -43,7 +41,7 @@ class CurrentUser extends Component {
   }
 
   uploadImage(files){
-    //Cloudinary API documentation
+    //Cloudinary API documentation guidelines
     const image = files[0]
     //console.log('uploadImage: ')
     const cloudName = 'hn7c4ygti'
@@ -64,18 +62,25 @@ class CurrentUser extends Component {
         console.log('Upload error' + JSON.stringify(err))
         return
       }
-      console.log('Upload complete: ' + JSON.stringify(response))
+      console.log('Upload complete: ' + JSON.stringify(response.body))
+      let updatedProfile = Object.assign({}, this.state.updatedState)
+      updatedProfile['image'] = response.body['secure_url']
+      this.setState({
+        updatedState: updatedProfile
+      })
     })
   }
 
   render(){
     const currentUser = this.props.user
+    const image = (this.state.updatedState.image == null) ? '' : this.state.updatedState.image.replace('upload', 'upload/c_thumb,h_150,w_150,x_0,y_0')//Render thumbnail
     return(
       <div>
         <h2>Welcome { currentUser.username }</h2>
         <input type="text" id="username" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.username} placeholder="Username" /><br />
         <input type="text" id="area" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.area} placeholder="Neighborhood" /><br />
         <input type="text" id="gender" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.gender} placeholder="Gender" /><br />
+        <img src={image} /><br />
         <Dropzone onDrop={this.uploadImage.bind(this)} />
         <button onClick={this.updateProfile.bind(this)}>Update Profile</button>
       </div>
