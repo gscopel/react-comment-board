@@ -26,6 +26,11 @@ constructor(){
     let zone = this.props.zones[this.props.zoneIndex]
     updatedComment['zone'] = zone._id
     updatedComment['username'] = this.props.user.username
+    updatedComment['author'] = {
+      username: this.props.user.username,
+      id: this.props.user._id,
+      image: this.props.user.image
+    }
 
     APIManager.post('/api/comment', updatedComment, (err, response) => {
       if (err){

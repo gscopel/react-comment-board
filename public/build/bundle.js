@@ -28422,6 +28422,11 @@ var Comments = function (_Component) {
       var zone = this.props.zones[this.props.zoneIndex];
       updatedComment['zone'] = zone._id;
       updatedComment['username'] = this.props.user.username;
+      updatedComment['author'] = {
+        username: this.props.user.username,
+        id: this.props.user._id,
+        image: this.props.user.image
+      };
 
       _utils.APIManager.post('/api/comment', updatedComment, function (err, response) {
         if (err) {
@@ -28650,6 +28655,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactRouterDom = __webpack_require__(23);
 
+var _utils = __webpack_require__(6);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -28670,21 +28677,26 @@ var Comment = function (_Component) {
   _createClass(Comment, [{
     key: 'render',
     value: function render() {
+      var currentComment = this.props.currentComment;
+      var author = currentComment.author;
+      var radius = 16;
+
       return _react2.default.createElement(
         'div',
         null,
         _react2.default.createElement(
           'p',
           { style: { fontSize: 20, fontWeight: 400 } },
-          this.props.currentComment.body
+          currentComment.body
         ),
+        _react2.default.createElement('img', { style: { borderRadius: radius, marignRight: 10 }, src: _utils.ImageHelper.thumbnail(author.image, 2 * radius) }),
         _react2.default.createElement(
           'span',
           { style: { fontWeight: 200 } },
           _react2.default.createElement(
             _reactRouterDom.Link,
-            { to: '/profile/' + this.props.currentComment.username },
-            this.props.currentComment.username
+            { to: '/profile/' + author.username },
+            author.username
           )
         ),
         _react2.default.createElement(
@@ -28695,7 +28707,7 @@ var Comment = function (_Component) {
         _react2.default.createElement(
           'span',
           { style: { fontWeight: 200 } },
-          this.props.currentComment.timestamp
+          currentComment.timestamp
         ),
         _react2.default.createElement('hr', null)
       );
