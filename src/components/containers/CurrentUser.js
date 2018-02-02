@@ -76,11 +76,12 @@ class CurrentUser extends Component {
     const currentUser = this.props.user
     const image = (this.state.updatedState.image == null) ? '' : ImageHelper.thumbnail(this.state.updatedState.image, 150)//Render thumbnail
     return(
-      <div>
+      <div style={{marginLeft:30}}>
         <h2>Welcome { currentUser.username }</h2>
         <input type="text" id="username" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.username} placeholder="Username" /><br />
         <input type="text" id="area" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.area} placeholder="Neighborhood" /><br />
         <input type="text" id="gender" onChange={this.updateCurrentUser.bind(this)} defaultValue={currentUser.gender} placeholder="Gender" /><br />
+        <br /><h4>Include an image of yourself</h4>
         <img src={image} /><br />
         <Dropzone onDrop={this.uploadImage.bind(this)} />
         <button onClick={this.updateProfile.bind(this)}>Update Profile</button>

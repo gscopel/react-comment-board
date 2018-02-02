@@ -52,9 +52,6 @@ constructor(){
       return
     }
 
-    // if (this.props.commentsLoaded == true)
-    //   return
-
     let commentsArray = this.props.commentsMap[zone._id]
     if (commentsArray != null){
       return
@@ -69,21 +66,16 @@ constructor(){
     })
   }
 
+  updatedComment(comment, updateBody){
+    console.log('updatedComment: '+ comment._id + ',' + updateBody)
+    this.props.updateComment(comment, {body: updateBody})
+  }
+
   render(){
 
     let selectedZone = this.props.zones[this.props.zoneIndex]
+    const currentUser = this.props.user //null if not logged in
     //console.log('ZONE' + JSON.stringify(selectedZone))
-
-    // let zoneComments = this.props.commentsMap[selectedZone._id]
-    //
-    // const commentList = zoneComments.map((comment, i) => {
-    //   return (
-    //     <li key={i}><Comment currentComment={comment} /></li>
-    //   )
-    // })
-    //
-    // const selectedZone = this.props.zones[this.props.zoneIndex]
-    // const zoneName = (selectedZone == null) ? '' : selectedZone.name
 
     let zoneName = null
     let commentList = null
@@ -94,8 +86,12 @@ constructor(){
 
         if (zoneComments != null){
           commentList = zoneComments.map((comment, i) => {
+            let editable = false
+            if (currentUser != null){
+              editable = (currentUser._id == comment.author.id)
+            }
           return (
-            <li key={i}><Comment currentComment={comment} /></li>
+            <li key={i}><Comment onUpdate={this.updatedComment.bind(this)} isEditable={editable} currentComment={comment} /></li>
           )
         })
       }
@@ -128,7 +124,8 @@ const stateToProps = (state) => {
 const dispatchToProps = (dispatch) => {
   return {
     commentsReceived: (comments, zone) => dispatch(actions.commentsReceived(comments, zone)),
-    commentCreated: (comment) => dispatch(actions.commentCreated(comment))
+    commentCreated: (comment) => dispatch(actions.commentCreated(comment)),
+    updateComment: (comment, params) => dispatch(actions.updateComment(comment, params))
   }
 }
 

@@ -74,10 +74,12 @@ class Zones extends Component {
     else {
       content = (
         <div>
-          <ol>
-            {listItem}
-          </ol>
-            <CreateZone onCreateZone={this.submitZone.bind(this)} />
+        <CreateZone onCreateZone={this.submitZone.bind(this)} />
+          <ul style={{listStyleType:'none'}}>
+            <li>
+              {listItem}
+            </li>
+          </ul>
         </div>
       )
     }

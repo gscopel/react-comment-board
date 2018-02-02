@@ -6,7 +6,7 @@ var store
 
 export default {
 
-  configureStore: () => {
+  configureStore: (initial) => {
     const reducers = combineReducers({
       zone: zoneReducer,
       comment: commentReducer,
@@ -16,6 +16,7 @@ export default {
 
     store = createStore(
       reducers,
+      initial,
       applyMiddleware(thunk)
     )
     return store

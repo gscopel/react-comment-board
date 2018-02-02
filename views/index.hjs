@@ -6,12 +6,13 @@
           integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">{{{ react }}}</div>
     <!-- <form action="/api/zone" method="post">
       <input type="text" name="name" placeholder="Name" />
       <input type="text" name="zipCodes" placeholder="Zip Code" />
       <input type="submit" value="Create Zone" />
     </form> -->
+    <script type="text/javascript">window.__PRELOADED_STATE__ = {{{ preloadedState }}}</script>
     <script type="text/javascript" src="/build/bundle.js"></script>
   </body>
 </html>

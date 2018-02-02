@@ -6,12 +6,13 @@ class Home extends Component {
     return(
       <div className="container">
         <div className="row">
-          <div className="col-md-4">
+          <div className="col-md-2">
              <Account />
-             <Zones />
           </div>
-
-          <div className="col-md-8">
+          <div className="col-md-4">
+              <Zones />
+          </div>
+          <div className="col-md-6">
              <Comments />
           </div>
         </div>

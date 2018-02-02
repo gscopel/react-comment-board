@@ -27,11 +27,11 @@ class CreateZone extends Component {
 
   render(){
     return(
-      <div>
-      <h3>Create Zone</h3>
-      <input onChange={this.updateZone.bind(this)} id="name" className="form-control" type="text" placeholder="Name"/><br />
-      <input onChange={this.updateZone.bind(this)} id="zipCode" className="form-control" type="text" placeholder="Zip Code"/><br />
-      <button onClick={this.submitZone.bind(this)} className="btn btn-success">Add Zone</button>
+      <div style={{marginLeft:36}} className="container">
+        <h3>Create Zone</h3>
+        <input onChange={this.updateZone.bind(this)} id="name" className="form-control" type="text" placeholder="Name"/><br />
+        <input onChange={this.updateZone.bind(this)} id="zipCode" className="form-control" type="text" placeholder="Zip Code"/><br />
+        <button onClick={this.submitZone.bind(this)} className="btn btn-success">Add Zone</button>
       </div>
     )
   }
