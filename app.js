@@ -6,9 +6,9 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose')
 var sessions = require('client-sessions')
+require('dotenv').config()
 
-var dbUrl = 'mongodb://localhost/comment-board'
-mongoose.connect(dbUrl, function(err, res){
+mongoose.connect(process.env.DB_URL, function(err, res){
   if (err){
     console.log('DB CONNECTION HAS FAILED: ' + err)
   }
