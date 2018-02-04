@@ -13,7 +13,7 @@ mongoose.connect(process.env.DB_URL, function(err, res){
     console.log('DB CONNECTION HAS FAILED: ' + err)
   }
   else {
-    console.log('DB CONNECTION SUCCESS: ' + dbUrl)
+    console.log('DB CONNECTION SUCCESS:')
   }
 })
 
