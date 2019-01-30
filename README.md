@@ -10,5 +10,5 @@
 
 • Navigation with React Router 
 
-Here is a link to the deployed site via Heroku https://morgantown-comment-board.herokuapp.com/
+Here is a link to the deployed project via Heroku https://morgantown-comment-board.herokuapp.com/
 
