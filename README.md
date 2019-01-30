@@ -8,3 +8,5 @@
 
 • Building out user profiles
 
+• Navigation with React Router 
+
